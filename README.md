@@ -12,10 +12,10 @@ How to Run:
 
 APIs:
 
-1. 0.0.0.0/5000/import
+1. 0.0.0.0:5000/import
     This is a get request which basically does the data cleaning of a file which is included in the project directory. It extracts all the unique words and its count and stores it into mysql database.
 
-2. 0.0.0.0/5000/wordscount
+2. 0.0.0.0:5000/wordscount
     This is a get request which queries the MySQL database and returns all the unique words and its count as the response.
 
 3. 0.0.0.0:5000/wordcount/{word}
