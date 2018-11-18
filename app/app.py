@@ -1,4 +1,3 @@
-from typing import List, Dict
 from flask import Flask
 from flask import request
 import mysql.connector
@@ -15,7 +14,7 @@ config = {
     'database': 'netskope'
 }
 
-def wordmap() -> List[Dict]:
+def wordmap():
     connection = mysql.connector.connect(**config)
     cursor = connection.cursor()
     cursor.execute('SELECT * FROM wordcount')
@@ -62,7 +61,7 @@ def countWordWithPattern(pattern):
     return results
 
 @app.route('/wordscount')
-def hello() -> str:
+def hello():
     return json.dumps({'wordcount': wordmap()})
 
 @app.route('/wordcount/<word>')
@@ -100,7 +99,7 @@ def importFile():
     # inserting the data to check insrt happening or not.
     insert_word(thisdict)
 
-    return "some opeartion going on"
+    return "Database populated with words"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
