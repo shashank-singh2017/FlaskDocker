@@ -23,3 +23,10 @@ APIs:
 
 4. 0.0.0.0:5000/matchword/{pattern}
     This get request returns all the words that has pattern as the substring.
+
+Running Tests:
+
+After running the application
+
+1. cd app
+2. python3 test.py ( It will not work for python 2.x as it uses a package "requests" which is not supported in Python 2.x)
