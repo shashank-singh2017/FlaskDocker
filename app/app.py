@@ -60,6 +60,35 @@ def countWordWithPattern(pattern):
     connection.close()
     return results
 
+def fileExists(filename):
+    connection = mysql.connector.connect(**config)
+    cursor = connection.cursor()
+    query = "SELECT * FROM files where name = %s"
+    cursor.execute(query, (filename,))
+    results = cursor.fetchall()
+    cursor.close()
+    connection.close()
+
+    if len(results) == 0:
+        return False
+    else:
+        return True
+
+def insertFilename(filename):
+    query = "INSERT INTO files(name) " \
+            "VALUES(%s)"
+
+    connection = mysql.connector.connect(**config)
+    cursor = connection.cursor(prepared=True)
+
+    result  = cursor.execute(query, (filename, ))
+
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+
+
 @app.route('/wordscount')
 def hello():
     return json.dumps({'wordcount': wordmap()})
@@ -74,32 +103,37 @@ def wordWithPattern(pattern):
 
 @app.route('/import')
 def importFile():
-    my_file_handle=open("harrypotter", "r")
-    text = my_file_handle.read()
+    if fileExists('harrypotter'):
+        return "File already imported"
+    else:
+        my_file_handle=open("harrypotter", "r")
+        text = my_file_handle.read()
 
-    text = text.strip()
-    wordArr = re.split("\s+", text)
+        text = text.strip()
+        wordArr = re.split("\s+", text)
 
-    thisdict = {}
+        thisdict = {}
 
-    for word in wordArr:
-        if word == '':
-            continue
+        for word in wordArr:
+            if word == '':
+                continue
 
-        word = re.sub('^(\W)*', "", word)
+            word = re.sub('^(\W)*', "", word)
 
-        word = re.sub('(\W)*$', "", word)
+            word = re.sub('(\W)*$', "", word)
 
-        if word in thisdict:
-            count = thisdict[word]
-            thisdict[word] = count+1
-        else:
-            thisdict[word] = 1
+            if word in thisdict:
+                count = thisdict[word]
+                thisdict[word] = count+1
+            else:
+                thisdict[word] = 1
 
-    # inserting the data to check insrt happening or not.
-    insert_word(thisdict)
+        # inserting the data to check insrt happening or not.
+        insert_word(thisdict)
 
-    return "Database populated with words"
+        insertFilename('harrypotter')
+
+        return "Database populated with words"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
